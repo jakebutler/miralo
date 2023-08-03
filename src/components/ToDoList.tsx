@@ -39,21 +39,31 @@ const TodoList: React.FC = () => {
   }, [dispatch]);
 
   return (
-    <ul>
+    <ul className="space-y-2">
       {todos === undefined || todos.length === 0 ? (
-        <p>No todos, yay!</p>
+        <p className="text-gray-500 flex items-center">No todos, yay!</p>
       ) : (
         todos.map((todo) => (
-          <li key={todo.id}>
+          <li
+            key={todo.id}
+            className={`flex items-center justify-between px-4 py-2 ${
+              todo.completed ? "bg-green-100" : "bg-white"
+            } rounded-md `}
+          >
             <span
-              style={{
-                textDecoration: todo.completed ? "line-through" : "none",
-              }}
+              className={`cursor-pointer ${
+                todo.completed ? "line-through" : ""
+              }`}
               onClick={() => handleToggleTodo(todo.id)}
             >
               {todo.text}
             </span>
-            <button onClick={() => handleDeleteTodo(todo.id)}>Delete</button>
+            <button
+              className="ml-2  text-red-600 hover:text-red-700 focus:outline-none"
+              onClick={() => handleDeleteTodo(todo.id)}
+            >
+              Delete
+            </button>
           </li>
         ))
       )}

@@ -29,9 +29,19 @@ export default function ToDoForm() {
     }
   };
   return (
-    <form onSubmit={handleSubmit}>
-      <input type="text" value={todoText} onChange={handleInputChange} />
-      <button type="submit">Add Todo</button>
+    <form onSubmit={handleSubmit} className="flex mb-4">
+      <input
+        type="text"
+        value={todoText}
+        onChange={handleInputChange}
+        className="flex-1 py-2 px-4 border border-gray-400 rounded-l-md"
+      />
+      <button
+        type="submit"
+        className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-r-md"
+      >
+        Add Todo
+      </button>
     </form>
   );
 }

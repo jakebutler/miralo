@@ -12,10 +12,16 @@ export default async function ToDos() {
   }
 
   return (
-    <>
-      <h1>My Todos</h1>
-      <ToDoForm />
-      <TodoList />
-    </>
+    <div className="min-h-screen flex flex-col justify-center  items-center">
+      <div className="max-w-md w-full bg-white bg-slate-800rounded-lg p-8 shadow-lg">
+        <div className="flex justify-center items-center mb-4">
+          <h1 className="text-2xl font-semibold mb-4">Todo List</h1>
+        </div>
+        <TodoList />
+        <div className="mt-3">
+          <ToDoForm />
+        </div>
+      </div>
+    </div>
   );
 }
