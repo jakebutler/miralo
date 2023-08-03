@@ -1,11 +1,16 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { addTodo } from "../redux/todoSlice";
+import { saveTodosToLocalStorage } from "../utils/localStorage.ts";
 
 export default function ToDoForm() {
   const [todoText, setTodoText] = useState("");
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    saveTodosToLocalStorage();
+  }, [dispatch]);
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setTodoText(event.target.value);
