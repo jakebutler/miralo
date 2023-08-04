@@ -1,10 +1,7 @@
 // src/store/todosSlice.ts
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "./store";
-import {
-  saveTodosToLocalStorage,
-  loadTodosFromLocalStorage,
-} from "../utils/localStorage";
+import { saveTodosToLocalStorage } from "../utils/localStorage";
 
 export interface Todo {
   id: number;
