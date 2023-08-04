@@ -20,8 +20,8 @@ export default async function Home() {
                 className="w-20 h-20 rounded-full border-4 border-indigo-200"
               />
               <div className="ml-4">
-                <h1 className="text-3xl font-bold">{session.user.name}</h1>
-                <h2 className="text-xl">{session.user.email}</h2>
+                <h1 className="text-3xl font-bold">{session?.user?.name}</h1>
+                <h2 className="text-xl">{session?.user?.email}</h2>
               </div>
             </div>
 
