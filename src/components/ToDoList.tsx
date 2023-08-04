@@ -7,10 +7,7 @@ import {
   setTodos,
   deleteTodo,
 } from "../redux/todoSlice";
-import {
-  saveTodosToLocalStorage,
-  loadTodosFromLocalStorage,
-} from "../utils/localStorage";
+import { saveTodosToLocalStorage } from "../utils/localStorage";
 
 const TodoList: React.FC = () => {
   const todos = useSelector(selectTodos);
@@ -26,7 +23,9 @@ const TodoList: React.FC = () => {
   };
 
   useEffect(() => {
-    const todos = loadTodosFromLocalStorage();
+    const data = localStorage.getItem("todos");
+    const todos = data ? JSON.parse(data) : [];
+
     if (todos && todos.length > 0) {
       dispatch(setTodos(todos));
     }
