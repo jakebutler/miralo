@@ -1,6 +1,6 @@
 # Todo App  📜
 
-This is a simple Todo app built with Next.js, TypeScript, Redux Toolkit, and local storage. It allows users to create, edit, and delete tasks and saves them in local storage to persist even after the page is refreshed.
+This is a simple Todo app built with Next.js, TypeScript, Redux Toolkit, and local storage. It allows users to create and delete tasks and saves them in local storage to persist even after the page is refreshed.
 
 ## Features :dart:
 
