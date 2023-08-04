@@ -1,3 +1,4 @@
+import { Todo } from "../redux/todoSlice";
 // Function to save todos to localStorage
 export const saveTodosToLocalStorage = (todos: Todo[]) => {
   try {
