@@ -39,11 +39,6 @@ const todosSlice = createSlice({
     setTodos: (state, action: PayloadAction<Todo[]>) => {
       state.todos = action.payload;
     },
-    extraReducers: (builder) => {
-      builder.addCase(setTodos, (state, action: PayloadAction<Todo[]>) => {
-        state.todos = action.payload;
-      });
-    },
   },
 });
 
