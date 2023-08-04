@@ -34,11 +34,11 @@ export default function ToDoForm() {
         type="text"
         value={todoText}
         onChange={handleInputChange}
-        className="flex-1 py-2 px-4 border border-gray-400 rounded-l-md"
+        className="flex-1 py-2 px-4 bg-slate-800 border border-white rounded-l-sm mr-2"
       />
       <button
         type="submit"
-        className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-r-md"
+        className="bg-violet-500 hover:bg-violet-600 text-white px-4 rounded-r-md"
       >
         Add Todo
       </button>

@@ -1,8 +1,7 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import {
-  Todo,
   selectTodos,
   toggleTodo,
   setTodos,
@@ -47,7 +46,7 @@ const TodoList: React.FC = () => {
           <li
             key={todo.id}
             className={`flex items-center justify-between px-4 py-2 ${
-              todo.completed ? "bg-green-100" : "bg-white"
+              todo.completed ? "bg-green-600" : "bg-slate-700"
             } rounded-md `}
           >
             <span
