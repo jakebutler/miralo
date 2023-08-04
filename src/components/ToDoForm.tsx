@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { addTodo } from "../redux/todoSlice";
-import { saveTodosToLocalStorage } from "../utils/localStorage.ts";
+import { saveTodosToLocalStorage } from "../utils/localStorage";
 
 export default function ToDoForm() {
   const [todoText, setTodoText] = useState("");

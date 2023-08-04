@@ -6,11 +6,11 @@ import {
   toggleTodo,
   setTodos,
   deleteTodo,
-} from "../redux/todoSlice.ts";
+} from "../redux/todoSlice";
 import {
   saveTodosToLocalStorage,
   loadTodosFromLocalStorage,
-} from "../utils/localStorage.ts";
+} from "../utils/localStorage";
 
 const TodoList: React.FC = () => {
   const todos = useSelector(selectTodos);
