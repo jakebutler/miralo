@@ -11,9 +11,13 @@ export default async function Home() {
           <>
             <div className="flex items-center mb-6">
               <img
-                src={session.user.image}
+                src={
+                  session.user.image
+                    ? session.user.image
+                    : "https://static.vecteezy.com/system/resources/previews/021/548/095/original/default-profile-picture-avatar-user-avatar-icon-person-icon-head-icon-profile-picture-icons-default-anonymous-user-male-and-female-businessman-photo-placeholder-social-network-avatar-portrait-free-vector.jpg"
+                }
                 alt="user image"
-                className="w-20 h-20 rounded-full border-4 border-indigo-500"
+                className="w-20 h-20 rounded-full border-4 border-indigo-200"
               />
               <div className="ml-4">
                 <h1 className="text-3xl font-bold">{session.user.name}</h1>
