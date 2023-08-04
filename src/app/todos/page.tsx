@@ -12,8 +12,8 @@ export default async function ToDos() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col justify-center  items-center">
-      <div className="max-w-md w-full bg-white bg-slate-800rounded-lg p-8 shadow-lg">
+    <div className="bg-gradient-to-r from-violet-800 to-pink-400 text-white min-h-screen flex items-center justify-center px-4">
+      <div className="max-w-md w-full  bg-slate-800 rounded-lg p-8 shadow-lg">
         <div className="flex justify-center items-center mb-4">
           <h1 className="text-2xl font-semibold mb-4">Todo List</h1>
         </div>
