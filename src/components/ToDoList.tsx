@@ -32,11 +32,6 @@ const TodoList: React.FC = () => {
     }
   }, [dispatch]);
 
-  // Store todos in localStorage whenever they change in the Redux store
-  useEffect(() => {
-    saveTodosToLocalStorage();
-  }, [dispatch]);
-
   return (
     <ul className="space-y-2">
       {todos === undefined || todos.length === 0 ? (
