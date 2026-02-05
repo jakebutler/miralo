@@ -19,6 +19,7 @@ export default function MiraloSessionPage() {
   const [validator, setValidator] = useState<ValidatorArtifacts | null>(null);
   const [loading, setLoading] = useState(true);
   const [running, setRunning] = useState(false);
+  const [replaying, setReplaying] = useState(false);
   const [iterating, setIterating] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -100,6 +101,30 @@ export default function MiraloSessionPage() {
     }
   };
 
+  const replayTranscript = async () => {
+    setReplaying(true);
+    setError(null);
+
+    try {
+      const response = await fetch("/api/miralo/transcript/replay", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ sessionId }),
+      });
+      const payload = await response.json();
+      if (!response.ok) {
+        throw new Error(payload.error || "Failed to replay transcript.");
+      }
+
+      setSession(payload.session as MiraloSession);
+      await load();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Unexpected error");
+    } finally {
+      setReplaying(false);
+    }
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-[#f6f3ec] px-6 py-12 text-slate-900">
@@ -150,6 +175,14 @@ export default function MiraloSessionPage() {
               className="rounded-full bg-[#1f6f78] px-5 py-2 text-sm font-semibold text-white disabled:opacity-50"
             >
               {running ? "Running..." : "Run Interview Simulation"}
+            </button>
+            <button
+              type="button"
+              onClick={replayTranscript}
+              disabled={replaying}
+              className="rounded-full border border-slate-400 bg-white px-5 py-2 text-sm font-semibold text-slate-700 disabled:opacity-50"
+            >
+              {replaying ? "Replaying..." : "Replay Sample Transcript"}
             </button>
             <button
               type="button"
@@ -253,6 +286,11 @@ export default function MiraloSessionPage() {
                   <p className="mt-3 text-xs uppercase tracking-[0.18em] text-slate-500">
                     Historian: {session.iteration.historianPath}
                   </p>
+                  {session.iteration.iterationPromptPath ? (
+                    <p className="mt-2 text-xs uppercase tracking-[0.18em] text-slate-500">
+                      Iteration prompt: {session.iteration.iterationPromptPath}
+                    </p>
+                  ) : null}
                 </div>
               ) : (
                 <p className="mt-4 text-sm text-slate-600">

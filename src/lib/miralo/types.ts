@@ -87,6 +87,7 @@ export interface IterationPlan {
   uiChanges: string[];
   skipped: string[];
   historianPath: string;
+  iterationPromptPath?: string;
 }
 
 export interface MiraloSession {

@@ -1,5 +1,5 @@
 import path from "node:path";
-import { readdir } from "node:fs/promises";
+import { readdir, readFile } from "node:fs/promises";
 import { createIterationPlan } from "./iterationPlanner";
 import { maybeGenerateJson } from "./openaiAdapter";
 import { analyzeRepoDeterministic, resolveRepoPath } from "./repoAnalyzer";
@@ -273,4 +273,56 @@ export async function latestValidatorArtifacts() {
     latestScreenshot:
       screenshots.length > 0 ? path.join(recordingsDir, screenshots[screenshots.length - 1]) : null,
   };
+}
+
+export async function replayTranscriptFromSample(sessionId: string): Promise<MiraloSession> {
+  const session = await readSession(sessionId);
+  if (!session) {
+    throw new Error("Session not found.");
+  }
+
+  const samplePath = path.resolve(
+    process.cwd(),
+    "miralo/runtime/transcripts/sample-transcript.json"
+  );
+  const raw = await readFile(samplePath, "utf8");
+  const sample = JSON.parse(raw) as Array<{
+    id: string;
+    t0: number;
+    t1: number;
+    speaker: "Interviewer" | "Interviewee";
+    text: string;
+    validated?: boolean;
+  }>;
+
+  const transcript = sample.map((chunk) => ({
+    id: chunk.id,
+    speaker: chunk.speaker,
+    t0: chunk.t0,
+    t1: chunk.t1,
+    text: chunk.text,
+    textFinal: chunk.text,
+    source: "replay" as const,
+    validated: Boolean(chunk.validated),
+  }));
+
+  const validatedFeedback = transcript
+    .filter((chunk) => chunk.validated)
+    .map((chunk) => ({
+      chunkId: chunk.id,
+      text: chunk.text,
+      confidence: "high" as const,
+    }));
+
+  const updated = await updateSession(session.id, (current) => ({
+    ...current,
+    transcript,
+    validatedFeedback,
+  }));
+
+  if (!updated) {
+    throw new Error("Failed to persist replay transcript.");
+  }
+
+  return updated;
 }

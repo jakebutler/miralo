@@ -40,6 +40,20 @@ clickthrough on `/demo`, and writes:
 - `miralo/runtime/recordings/clickthrough-*.webm`
 - `miralo/runtime/recordings/clickthrough-*.png`
 
+## Transcript Replay Fallback
+
+When live transcription is unavailable, replay the canned transcript for a session:
+
+```bash
+curl -X POST http://localhost:3000/api/miralo/transcript/replay \\
+  -H "Content-Type: application/json" \\
+  -d '{"sessionId":"<session-id>"}'
+```
+
+The same session timeline updates in UI, and iteration generation writes:
+
+- `miralo/runtime/worktrees/<session-id>/iteration_prompt.txt`
+
 ## Execution Plan + Worktrees
 
 - Ticket plan: `miralo/docs/execution-plan.md`

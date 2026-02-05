@@ -48,6 +48,27 @@ function buildHistorianMarkdown(session: MiraloSession, uiChanges: string[]): st
   ].join("\n");
 }
 
+function buildIterationPrompt(session: MiraloSession): string {
+  const primary = session.validatedFeedback[0];
+  const validatedText = primary?.text || "No validated summary detected yet.";
+  const supporting = primary?.supportingChunkIds?.join(", ") || "(none)";
+
+  return [
+    "# Iteration Prompt",
+    "",
+    "Validated summary:",
+    validatedText,
+    "",
+    `Session ID: ${session.id}`,
+    `Summary chunk: ${primary?.summaryChunkId || "(none)"}`,
+    `Affirmation chunk: ${primary?.affirmationChunkId || "(none)"}`,
+    `Supporting chunk ids: ${supporting}`,
+    "",
+    "Constraint: UI-only changes. No backend/schema/auth hardening.",
+    "",
+  ].join("\n");
+}
+
 export async function createIterationPlan(
   session: MiraloSession,
   selectedDirections: DirectionOption[]
@@ -57,11 +78,16 @@ export async function createIterationPlan(
   const id = randomUUID();
 
   const logsDir = path.resolve(process.cwd(), "miralo/runtime/logs");
+  const worktreesDir = path.resolve(process.cwd(), "miralo/runtime/worktrees", session.id);
   await mkdir(logsDir, { recursive: true });
+  await mkdir(worktreesDir, { recursive: true });
 
   const historianPath = path.join(logsDir, `iteration-${session.id}.md`);
+  const iterationPromptPath = path.join(worktreesDir, "iteration_prompt.txt");
   const historianBody = buildHistorianMarkdown(session, uiChanges);
+  const promptBody = buildIterationPrompt(session);
   await writeFile(historianPath, historianBody, "utf8");
+  await writeFile(iterationPromptPath, promptBody, "utf8");
 
   return {
     id,
@@ -71,5 +97,6 @@ export async function createIterationPlan(
     uiChanges,
     skipped: ["No backend or schema changes.", "No auth/permission hardening in hackathon slice."],
     historianPath,
+    iterationPromptPath,
   };
 }
