@@ -1,0 +1,17 @@
+[
+  {
+    "id": "seg-001",
+    "t0": 8.2,
+    "t1": 12.6,
+    "speaker": "Interviewer",
+    "text": "Can I summarize that you want the todo list to feel more welcoming?"
+  },
+  {
+    "id": "seg-002",
+    "t0": 12.7,
+    "t1": 16.4,
+    "speaker": "Interviewee",
+    "text": "Yes, and I want the empty state to guide me on what to do next.",
+    "validated": true
+  }
+]

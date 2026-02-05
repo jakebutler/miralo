@@ -32,18 +32,22 @@ const TodoList: React.FC = () => {
   }, [dispatch]);
 
   return (
-    <ul className="space-y-2">
+    <ul className="space-y-2" data-testid="todo-list">
       {todos === undefined || todos.length === 0 ? (
-        <p className="text-gray-500 flex items-center">No todos, yay!</p>
+        <p className="text-gray-500 flex items-center" data-testid="empty-state">
+          No todos, yay!
+        </p>
       ) : (
-        todos.map((todo) => (
+        todos.map((todo, index) => (
           <li
             key={todo.id}
+            data-testid={`todo-item-${index}`}
             className={`flex items-center justify-between px-4 py-2 ${
               todo.completed ? "bg-green-600" : "bg-slate-700"
             } rounded-md `}
           >
             <span
+              data-testid={`todo-text-${index}`}
               className={`cursor-pointer ${
                 todo.completed ? "line-through" : ""
               }`}
@@ -52,6 +56,7 @@ const TodoList: React.FC = () => {
               {todo.text}
             </span>
             <button
+              data-testid={`delete-todo-${index}`}
               className="ml-2  text-red-600 hover:text-red-700 focus:outline-none"
               onClick={() => handleDeleteTodo(todo.id)}
             >
