@@ -3,8 +3,9 @@ import type { Metadata } from "next";
 import ReduxProvider from "../redux/provider";
 
 export const metadata: Metadata = {
-  title: "Miralo",
-  description: "Miralo hackathon demo with a Next.js Todo app",
+  title: "Miralo | From Interview Feedback to Demo-Ready UI Iterations",
+  description:
+    "Miralo turns validated interview feedback into UI-only iterations with before/after proof, decision logs, and deterministic demo artifacts.",
 };
 
 export default function RootLayout({

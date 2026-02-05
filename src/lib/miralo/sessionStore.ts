@@ -3,7 +3,7 @@ import { mkdir, readFile, readdir, rename, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { MiraloSession } from "./types";
 
-const SESSIONS_DIR = path.resolve(process.cwd(), "miralo/runtime/sessions");
+const SESSIONS_DIR = path.resolve(process.cwd(), "demo-orchestration/runtime/sessions");
 
 async function ensureSessionsDir() {
   await mkdir(SESSIONS_DIR, { recursive: true });
@@ -24,6 +24,18 @@ async function writeSessionFile(session: MiraloSession) {
   await rename(tmpPath, filePath);
 }
 
+function withSessionDefaults(session: MiraloSession): MiraloSession {
+  return {
+    ...session,
+    buildJobs: session.buildJobs || [],
+    iterations: session.iterations || [],
+    transcript: session.transcript || [],
+    validatedFeedback: session.validatedFeedback || [],
+    worktrees: session.worktrees || [],
+    decisionLog: session.decisionLog || [],
+  };
+}
+
 export async function createSession(initial: {
   intake: MiraloSession["intake"];
 }): Promise<MiraloSession> {
@@ -37,6 +49,8 @@ export async function createSession(initial: {
     validatedFeedback: [],
     worktrees: [],
     decisionLog: [],
+    buildJobs: [],
+    iterations: [],
   };
 
   await writeSessionFile(session);
@@ -46,7 +60,7 @@ export async function createSession(initial: {
 export async function readSession(sessionId: string): Promise<MiraloSession | null> {
   try {
     const raw = await readFile(sessionPath(sessionId), "utf8");
-    return JSON.parse(raw) as MiraloSession;
+    return withSessionDefaults(JSON.parse(raw) as MiraloSession);
   } catch {
     return null;
   }
@@ -62,9 +76,10 @@ export async function updateSession(
   }
 
   const updated = updater({ ...current, updatedAt: new Date().toISOString() });
-  updated.updatedAt = new Date().toISOString();
-  await writeSessionFile(updated);
-  return updated;
+  const normalized = withSessionDefaults(updated);
+  normalized.updatedAt = new Date().toISOString();
+  await writeSessionFile(normalized);
+  return normalized;
 }
 
 export async function listSessions(limit = 20): Promise<MiraloSession[]> {
@@ -78,7 +93,7 @@ export async function listSessions(limit = 20): Promise<MiraloSession[]> {
 
   for (const fileName of selected) {
     const raw = await readFile(path.join(SESSIONS_DIR, fileName), "utf8");
-    sessions.push(JSON.parse(raw) as MiraloSession);
+    sessions.push(withSessionDefaults(JSON.parse(raw) as MiraloSession));
   }
 
   return sessions;

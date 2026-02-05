@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { latestValidatorArtifacts } from "@/lib/miralo/orchestrator";
+import { readIterationPromptText } from "@/lib/miralo/iterationPrompt";
 import { readSession } from "@/lib/miralo/sessionStore";
 
 interface RouteContext {
@@ -21,7 +22,20 @@ export async function GET(_: Request, context: RouteContext) {
     }
 
     const validator = await latestValidatorArtifacts();
-    return NextResponse.json({ session, validator });
+    const iterationPromptText = await readIterationPromptText(session);
+    const activeBuildJob = session.activeBuildJobId
+      ? (session.buildJobs || []).find((job) => job.id === session.activeBuildJobId) || null
+      : null;
+    const latestBuildJob = [...(session.buildJobs || [])].reverse()[0] || null;
+    const latestIteration = [...(session.iterations || [])].reverse()[0] || null;
+    return NextResponse.json({
+      session,
+      validator,
+      iterationPromptText,
+      activeBuildJob,
+      latestBuildJob,
+      latestIteration,
+    });
   } catch (error) {
     return NextResponse.json(
       {

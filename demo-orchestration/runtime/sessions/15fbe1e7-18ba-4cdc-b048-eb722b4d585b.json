@@ -1,0 +1,168 @@
+{
+  "id": "15fbe1e7-18ba-4cdc-b048-eb722b4d585b",
+  "createdAt": "2026-02-05T21:46:53.554Z",
+  "updatedAt": "2026-02-05T21:47:04.244Z",
+  "intake": {
+    "repoPath": "/Users/jacobbutler/Documents/GitHub/miralo/demo-todo-app",
+    "guidanceMode": "needs-help",
+    "hasHypotheses": false,
+    "hasScript": false
+  },
+  "transcript": [],
+  "validatedFeedback": [],
+  "worktrees": [
+    {
+      "name": "first-run-clarity",
+      "status": "selected",
+      "rationale": "Chosen first because the interview confirmed clarify first-run experience with explicit agreement.",
+      "directionId": "first-run-clarity"
+    },
+    {
+      "name": "core-flow-efficiency",
+      "status": "queued",
+      "rationale": "Prepared as follow-on direction after primary changes are validated.",
+      "directionId": "core-flow-efficiency"
+    },
+    {
+      "name": "visual-polish-speculative",
+      "status": "speculative",
+      "rationale": "Optional polish lane after clarify first-run experience lands."
+    }
+  ],
+  "decisionLog": [],
+  "analysis": {
+    "id": "33f77100-4f7d-4bd8-b3f2-533857241c03",
+    "repoPath": "/Users/jacobbutler/Documents/GitHub/miralo/demo-todo-app",
+    "generatedAt": "2026-02-05T21:46:41.861Z",
+    "filesScanned": 20,
+    "elapsedMs": 3,
+    "summary": "This repository looks like a product-facing app with enough UI surface to run interview-driven iteration loops quickly. It appears to be built with Next.js, React, Tailwind CSS. The structure suggests a focused feature set rather than a large multi-module system.",
+    "capabilities": [
+      "Frameworks detected: Next.js, React, Tailwind CSS.",
+      "Primary file types: .tsx (5), .ts (4), .js (3), .json (2).",
+      "State management appears to use Redux Toolkit.",
+      "Tailwind CSS is configured for rapid UI iteration.",
+      "Client-side storage usage (localStorage) appears in the codebase.",
+      "Domain hints: todo."
+    ],
+    "directions": [
+      {
+        "id": "first-run-clarity",
+        "title": "Clarify First-Run Experience",
+        "reason": "New users likely need stronger orientation, especially if the product has multiple routes or configuration steps.",
+        "interviewFocus": "Ask what they expected to see first and which missing context would help them start faster.",
+        "confidence": 0.78
+      },
+      {
+        "id": "core-flow-efficiency",
+        "title": "Streamline the Core Workflow",
+        "reason": "Primary tasks should feel faster; small friction points compound over repeated use.",
+        "interviewFocus": "Probe where they hesitate or take extra clicks when completing their most common task.",
+        "confidence": 0.82
+      },
+      {
+        "id": "feedback-and-trust",
+        "title": "Increase Feedback and Trust Signals",
+        "reason": "When data updates quickly, users need clear confirmation to trust the outcome.",
+        "interviewFocus": "Ask which actions feel uncertain and what feedback would make changes feel reliable.",
+        "confidence": 0.69
+      },
+      {
+        "id": "domain-specific-flow",
+        "title": "Tighten Domain-Specific Flow",
+        "reason": "The repo hints at domain-specific workflows that could benefit from tighter sequencing.",
+        "interviewFocus": "Ask how they complete the key domain task and where handoffs or missing steps appear.",
+        "confidence": 0.66
+      }
+    ]
+  },
+  "script": {
+    "id": "f68bb99a-51d9-4d9e-af75-4735f91b0190",
+    "analysisId": "33f77100-4f7d-4bd8-b3f2-533857241c03",
+    "generatedAt": "2026-02-05T21:46:53.557Z",
+    "title": "Miralo Interview Script",
+    "selectedDirectionIds": [
+      "first-run-clarity",
+      "core-flow-efficiency"
+    ],
+    "lines": [
+      {
+        "id": "ea830226-7c81-4f95-a84c-e83286f633b3",
+        "speaker": "Interviewer",
+        "beat": "explore",
+        "text": "Thanks for walking through this product. I want to understand where the current experience feels slow, unclear, or frustrating."
+      },
+      {
+        "id": "effce716-1192-4ef9-8d11-3575d3f665f1",
+        "speaker": "Interviewer",
+        "beat": "explore",
+        "text": "Let's focus on Clarify First-Run Experience. Ask what they expected to see first and which missing context would help them start faster.",
+        "directionId": "first-run-clarity"
+      },
+      {
+        "id": "fbc36838-d8c7-49a8-8222-0ed305701453",
+        "speaker": "Interviewee",
+        "beat": "explore",
+        "text": "This area slows me down today. I want a clearer, faster experience around Clarify First-Run Experience.",
+        "directionId": "first-run-clarity"
+      },
+      {
+        "id": "66c26545-13d1-4baf-947f-5455bca8d421",
+        "speaker": "Interviewer",
+        "beat": "summary",
+        "text": "Can I summarize that we should improve Clarify First-Run Experience with a clearer UI flow?",
+        "directionId": "first-run-clarity"
+      },
+      {
+        "id": "ed690e3e-d293-402c-8888-c554cb13b75b",
+        "speaker": "Interviewee",
+        "beat": "confirmation",
+        "text": "Yes, that summary is right.",
+        "directionId": "first-run-clarity",
+        "expectedValidation": true
+      },
+      {
+        "id": "e04ab0cf-3bf8-49a2-8cf4-1c2b591dd689",
+        "speaker": "Interviewer",
+        "beat": "explore",
+        "text": "Great. Let's capture one more priority before we move into implementation.",
+        "directionId": "first-run-clarity"
+      },
+      {
+        "id": "28f93a39-b830-4579-907d-9f7a09136f82",
+        "speaker": "Interviewer",
+        "beat": "explore",
+        "text": "Let's focus on Streamline the Core Workflow. Probe where they hesitate or take extra clicks when completing their most common task.",
+        "directionId": "core-flow-efficiency"
+      },
+      {
+        "id": "038e9fb7-abbb-48f7-892c-2d19a10171e0",
+        "speaker": "Interviewee",
+        "beat": "explore",
+        "text": "This area slows me down today. I want a clearer, faster experience around Streamline the Core Workflow.",
+        "directionId": "core-flow-efficiency"
+      },
+      {
+        "id": "72337494-9f89-4efa-9267-b976d9c0b268",
+        "speaker": "Interviewer",
+        "beat": "summary",
+        "text": "Can I summarize that we should improve Streamline the Core Workflow with a clearer UI flow?",
+        "directionId": "core-flow-efficiency"
+      },
+      {
+        "id": "8cb55f97-3a97-465b-ba8a-31dbba5b164b",
+        "speaker": "Interviewee",
+        "beat": "confirmation",
+        "text": "Yes, that summary is right.",
+        "directionId": "core-flow-efficiency",
+        "expectedValidation": true
+      },
+      {
+        "id": "ef735acb-0fd0-40d7-b277-0e306c44fec6",
+        "speaker": "Interviewer",
+        "beat": "summary",
+        "text": "Thanks. I have enough to draft UI-only changes and show before/after now."
+      }
+    ]
+  }
+}

@@ -21,6 +21,8 @@ export interface RepoAnalysis {
   id: string;
   repoPath: string;
   generatedAt: string;
+  filesScanned: number;
+  elapsedMs: number;
   summary: string;
   capabilities: string[];
   directions: DirectionOption[];
@@ -90,6 +92,77 @@ export interface IterationPlan {
   iterationPromptPath?: string;
 }
 
+export type IterationBuildStage =
+  | "queued"
+  | "specifying"
+  | "prompting"
+  | "coding"
+  | "guardrails"
+  | "validating"
+  | "launching"
+  | "ready"
+  | "failed"
+  | "canceled";
+
+export interface SessionSpecs {
+  generatedAt?: string;
+  productSpecPath?: string;
+  techSpecPath?: string;
+  warnings?: string[];
+}
+
+export interface IterationBuildJob {
+  id: string;
+  sessionId: string;
+  iterationNumber: number;
+  stage: IterationBuildStage;
+  statusMessage: string;
+  createdAt: string;
+  startedAt?: string;
+  finishedAt?: string;
+  workerPid?: number;
+  worktreePath?: string;
+  branchName?: string;
+  logPath?: string;
+  promptPath?: string;
+  specProductPath?: string;
+  specTechPath?: string;
+  specIterationPath?: string;
+  agentOutputPath?: string;
+  launchUrl?: string;
+  validatorReadyToShow: boolean;
+  validatorVideoPath?: string;
+  validatorScreenshotPath?: string;
+  diffFilesChanged?: number;
+  diffInsertions?: number;
+  diffDeletions?: number;
+  warningCodes?: string[];
+  errorCode?: string;
+  errorMessage?: string;
+}
+
+export interface BuiltIterationArtifact {
+  id: string;
+  sessionId: string;
+  iterationNumber: number;
+  createdAt: string;
+  worktreePath: string;
+  branchName: string;
+  launchUrl: string;
+  promptPath: string;
+  historianPath: string;
+  validator: {
+    readyToShow: boolean;
+    videoPath?: string;
+    screenshotPath?: string;
+  };
+  diffSummary: {
+    filesChanged: number;
+    insertions: number;
+    deletions: number;
+  };
+}
+
 export interface MiraloSession {
   id: string;
   createdAt: string;
@@ -101,6 +174,10 @@ export interface MiraloSession {
   validatedFeedback: ValidatedFeedback[];
   worktrees: WorktreeCandidate[];
   decisionLog: string[];
+  specs?: SessionSpecs;
+  buildJobs: IterationBuildJob[];
+  activeBuildJobId?: string;
+  iterations: BuiltIterationArtifact[];
   iteration?: IterationPlan;
 }
 

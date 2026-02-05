@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { FormEvent, useMemo, useState } from "react";
 import { DirectionOption, MiraloSession } from "@/lib/miralo/types";
 
-const DEFAULT_REPO_PATH = "/Users/jacobbutler/Documents/GitHub/miralo";
+const DEFAULT_REPO_PATH = "/Users/jacobbutler/Documents/GitHub/miralo/demo-todo-app";
 
 export default function MiraloIntakePage() {
   const router = useRouter();
@@ -207,11 +207,19 @@ export default function MiraloIntakePage() {
               Deterministic-first, OpenAI-optional
             </span>
           </div>
+          {loadingAnalyze ? (
+            <p className="mt-3 text-sm text-slate-600">
+              Scanning repository files and generating interview directions...
+            </p>
+          ) : null}
         </form>
 
         {session?.analysis ? (
           <section className="miralo-card rounded-3xl p-6">
             <h2 className="text-lg font-semibold">2) Suggested Directions</h2>
+            <p className="mt-2 text-xs uppercase tracking-[0.18em] text-slate-500">
+              Scanned {session.analysis.filesScanned} file(s) in {session.analysis.elapsedMs}ms
+            </p>
             <p className="mt-3 text-sm text-slate-700">{session.analysis.summary}</p>
 
             <div className="mt-4 rounded-2xl border border-slate-200 bg-white p-4">

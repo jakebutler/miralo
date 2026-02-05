@@ -30,7 +30,7 @@ export function generateInterviewScript(params: {
     line(
       "Interviewer",
       "explore",
-      "Thanks for walking through this app. I want to understand where the current flow slows you down first."
+      "Thanks for walking through this product. I want to understand where the current experience feels slow, unclear, or frustrating."
     )
   );
 
@@ -39,7 +39,7 @@ export function generateInterviewScript(params: {
       line(
         "Interviewer",
         "explore",
-        `Let's focus on ${direction.title.toLowerCase()}. ${direction.interviewFocus}`,
+        `Let's focus on ${direction.title}. ${direction.interviewFocus}`,
         direction.id
       )
     );
@@ -48,7 +48,7 @@ export function generateInterviewScript(params: {
       line(
         "Interviewee",
         "explore",
-        `Right now this area feels clunky. I want a cleaner, faster experience around ${direction.title.toLowerCase()}.`,
+        `This area slows me down today. I want a clearer, faster experience around ${direction.title}.`,
         direction.id
       )
     );
@@ -57,7 +57,7 @@ export function generateInterviewScript(params: {
       line(
         "Interviewer",
         "summary",
-        `Can I summarize that we should improve ${direction.title.toLowerCase()} with a clearer UI flow?`,
+        `Can I summarize that we should improve ${direction.title} with a clearer UI flow?`,
         direction.id
       )
     );

@@ -1,0 +1,251 @@
+{
+  "id": "27d6cd52-3c59-425c-b896-1db55ec26d9e",
+  "createdAt": "2026-02-05T22:51:52.253Z",
+  "updatedAt": "2026-02-05T22:53:25.669Z",
+  "intake": {
+    "repoPath": "/Users/jacobbutler/Documents/GitHub/miralo/demo-todo-app",
+    "guidanceMode": "needs-help",
+    "hasHypotheses": false,
+    "hasScript": false
+  },
+  "transcript": [
+    {
+      "id": "seg-001",
+      "speaker": "Interviewer",
+      "t0": 8.2,
+      "t1": 12.6,
+      "text": "Can I summarize that you want the todo list to feel more welcoming?",
+      "textFinal": "Can I summarize that you want the todo list to feel more welcoming?",
+      "source": "replay",
+      "validated": false
+    },
+    {
+      "id": "seg-002",
+      "speaker": "Interviewee",
+      "t0": 12.7,
+      "t1": 16.4,
+      "text": "Yes, and I want the empty state to guide me on what to do next.",
+      "textFinal": "Yes, and I want the empty state to guide me on what to do next.",
+      "source": "replay",
+      "validated": true
+    }
+  ],
+  "validatedFeedback": [
+    {
+      "chunkId": "seg-002",
+      "text": "Yes, and I want the empty state to guide me on what to do next.",
+      "confidence": "high"
+    }
+  ],
+  "worktrees": [
+    {
+      "name": "first-run-clarity",
+      "status": "selected",
+      "rationale": "Chosen first because the interview confirmed clarify first-run experience with explicit agreement.",
+      "directionId": "first-run-clarity"
+    },
+    {
+      "name": "core-flow-efficiency",
+      "status": "queued",
+      "rationale": "Prepared as follow-on direction after primary changes are validated.",
+      "directionId": "core-flow-efficiency"
+    },
+    {
+      "name": "visual-polish-speculative",
+      "status": "speculative",
+      "rationale": "Optional polish lane after clarify first-run experience lands."
+    }
+  ],
+  "decisionLog": [],
+  "buildJobs": [
+    {
+      "id": "aea4214b-7f9d-4c3e-8c85-57e9179ab39f",
+      "sessionId": "27d6cd52-3c59-425c-b896-1db55ec26d9e",
+      "iterationNumber": 1,
+      "stage": "ready",
+      "statusMessage": "Iteration is ready to launch.",
+      "createdAt": "2026-02-05T22:51:53.483Z",
+      "validatorReadyToShow": true,
+      "logPath": "/Users/jacobbutler/Documents/GitHub/miralo/miralo/runtime/logs/iteration-build-aea4214b-7f9d-4c3e-8c85-57e9179ab39f.log",
+      "workerPid": 27506,
+      "startedAt": "2026-02-05T22:51:53.533Z",
+      "specProductPath": "/Users/jacobbutler/Documents/GitHub/miralo/miralo/runtime/specs/27d6cd52-3c59-425c-b896-1db55ec26d9e/product-spec.md",
+      "specTechPath": "/Users/jacobbutler/Documents/GitHub/miralo/miralo/runtime/specs/27d6cd52-3c59-425c-b896-1db55ec26d9e/tech-spec.md",
+      "specIterationPath": "/Users/jacobbutler/Documents/GitHub/miralo/miralo/runtime/specs/27d6cd52-3c59-425c-b896-1db55ec26d9e/iteration-1-build-spec.md",
+      "warningCodes": [
+        "VALIDATION_CLICKTHROUGH_SKIPPED_REACT_REFRESH"
+      ],
+      "worktreePath": "/Users/jacobbutler/Documents/GitHub/miralo/miralo/runtime/worktrees/27d6cd52-3c59-425c-b896-1db55ec26d9e/iteration-1",
+      "branchName": "codex/iter-27d6cd52-1",
+      "promptPath": "/Users/jacobbutler/Documents/GitHub/miralo/miralo/runtime/worktrees/27d6cd52-3c59-425c-b896-1db55ec26d9e/iteration-1/miralo/runtime/iteration_prompt.txt",
+      "agentOutputPath": "/Users/jacobbutler/Documents/GitHub/miralo/miralo/runtime/logs/iteration-agent-aea4214b-7f9d-4c3e-8c85-57e9179ab39f.jsonl",
+      "diffFilesChanged": 1,
+      "diffInsertions": 2,
+      "diffDeletions": 0,
+      "finishedAt": "2026-02-05T22:53:25.669Z",
+      "launchUrl": "http://localhost:3001/demo"
+    }
+  ],
+  "iterations": [
+    {
+      "id": "iter-aea4214b-7f9d-4c3e-8c85-57e9179ab39f",
+      "sessionId": "27d6cd52-3c59-425c-b896-1db55ec26d9e",
+      "iterationNumber": 1,
+      "createdAt": "2026-02-05T22:53:25.669Z",
+      "worktreePath": "/Users/jacobbutler/Documents/GitHub/miralo/miralo/runtime/worktrees/27d6cd52-3c59-425c-b896-1db55ec26d9e/iteration-1",
+      "branchName": "codex/iter-27d6cd52-1",
+      "launchUrl": "http://localhost:3001/demo",
+      "promptPath": "/Users/jacobbutler/Documents/GitHub/miralo/miralo/runtime/worktrees/27d6cd52-3c59-425c-b896-1db55ec26d9e/iteration-1/miralo/runtime/iteration_prompt.txt",
+      "historianPath": "/Users/jacobbutler/Documents/GitHub/miralo/miralo/runtime/logs/iteration-27d6cd52-3c59-425c-b896-1db55ec26d9e-1.md",
+      "validator": {
+        "readyToShow": true
+      },
+      "diffSummary": {
+        "filesChanged": 1,
+        "insertions": 2,
+        "deletions": 0
+      }
+    }
+  ],
+  "analysis": {
+    "id": "8f6ba0cb-648e-45fe-9b9a-0d7fb28cbbcc",
+    "repoPath": "/Users/jacobbutler/Documents/GitHub/miralo/demo-todo-app",
+    "generatedAt": "2026-02-05T22:51:52.251Z",
+    "filesScanned": 20,
+    "elapsedMs": 10,
+    "summary": "This repository looks like a product-facing app with enough UI surface to run interview-driven iteration loops quickly. It appears to be built with Next.js, React, Tailwind CSS. The structure suggests a focused feature set rather than a large multi-module system.",
+    "capabilities": [
+      "Frameworks detected: Next.js, React, Tailwind CSS.",
+      "Primary file types: .tsx (5), .ts (4), .js (3), .json (2).",
+      "State management appears to use Redux Toolkit.",
+      "Tailwind CSS is configured for rapid UI iteration.",
+      "Client-side storage usage (localStorage) appears in the codebase.",
+      "Domain hints: todo."
+    ],
+    "directions": [
+      {
+        "id": "first-run-clarity",
+        "title": "Clarify First-Run Experience",
+        "reason": "New users likely need stronger orientation, especially if the product has multiple routes or configuration steps.",
+        "interviewFocus": "Ask what they expected to see first and which missing context would help them start faster.",
+        "confidence": 0.78
+      },
+      {
+        "id": "core-flow-efficiency",
+        "title": "Streamline the Core Workflow",
+        "reason": "Primary tasks should feel faster; small friction points compound over repeated use.",
+        "interviewFocus": "Probe where they hesitate or take extra clicks when completing their most common task.",
+        "confidence": 0.82
+      },
+      {
+        "id": "feedback-and-trust",
+        "title": "Increase Feedback and Trust Signals",
+        "reason": "When data updates quickly, users need clear confirmation to trust the outcome.",
+        "interviewFocus": "Ask which actions feel uncertain and what feedback would make changes feel reliable.",
+        "confidence": 0.69
+      },
+      {
+        "id": "domain-specific-flow",
+        "title": "Tighten Domain-Specific Flow",
+        "reason": "The repo hints at domain-specific workflows that could benefit from tighter sequencing.",
+        "interviewFocus": "Ask how they complete the key domain task and where handoffs or missing steps appear.",
+        "confidence": 0.66
+      }
+    ]
+  },
+  "specs": {
+    "generatedAt": "2026-02-05T22:51:52.255Z",
+    "productSpecPath": "/Users/jacobbutler/Documents/GitHub/miralo/miralo/runtime/specs/27d6cd52-3c59-425c-b896-1db55ec26d9e/product-spec.md",
+    "techSpecPath": "/Users/jacobbutler/Documents/GitHub/miralo/miralo/runtime/specs/27d6cd52-3c59-425c-b896-1db55ec26d9e/tech-spec.md",
+    "warnings": []
+  },
+  "script": {
+    "id": "bb2ab3ee-e2bd-4dee-92b0-c8cd5401d6a3",
+    "analysisId": "8f6ba0cb-648e-45fe-9b9a-0d7fb28cbbcc",
+    "generatedAt": "2026-02-05T22:51:52.826Z",
+    "title": "Miralo Interview Script",
+    "selectedDirectionIds": [
+      "first-run-clarity",
+      "core-flow-efficiency"
+    ],
+    "lines": [
+      {
+        "id": "2bd87870-dea1-455c-b0a5-efbcb64131d7",
+        "speaker": "Interviewer",
+        "beat": "explore",
+        "text": "Thanks for walking through this product. I want to understand where the current experience feels slow, unclear, or frustrating."
+      },
+      {
+        "id": "8e5601b0-4cf7-43f4-aa30-861c94ce0512",
+        "speaker": "Interviewer",
+        "beat": "explore",
+        "text": "Let's focus on Clarify First-Run Experience. Ask what they expected to see first and which missing context would help them start faster.",
+        "directionId": "first-run-clarity"
+      },
+      {
+        "id": "debdc7dd-e5b1-4b7b-ad7f-aa02fac80f49",
+        "speaker": "Interviewee",
+        "beat": "explore",
+        "text": "This area slows me down today. I want a clearer, faster experience around Clarify First-Run Experience.",
+        "directionId": "first-run-clarity"
+      },
+      {
+        "id": "199fffe2-9e5c-4a8c-8906-d310f164a9fd",
+        "speaker": "Interviewer",
+        "beat": "summary",
+        "text": "Can I summarize that we should improve Clarify First-Run Experience with a clearer UI flow?",
+        "directionId": "first-run-clarity"
+      },
+      {
+        "id": "07ada357-4186-4713-a06d-0f1758226706",
+        "speaker": "Interviewee",
+        "beat": "confirmation",
+        "text": "Yes, that summary is right.",
+        "directionId": "first-run-clarity",
+        "expectedValidation": true
+      },
+      {
+        "id": "bb5ace6f-198b-4805-af74-8726faafa1c6",
+        "speaker": "Interviewer",
+        "beat": "explore",
+        "text": "Great. Let's capture one more priority before we move into implementation.",
+        "directionId": "first-run-clarity"
+      },
+      {
+        "id": "e777e49a-37ac-4d64-ba3b-f7ca01013901",
+        "speaker": "Interviewer",
+        "beat": "explore",
+        "text": "Let's focus on Streamline the Core Workflow. Probe where they hesitate or take extra clicks when completing their most common task.",
+        "directionId": "core-flow-efficiency"
+      },
+      {
+        "id": "ef6f71f4-6bbe-4130-8eed-afd936ad01c7",
+        "speaker": "Interviewee",
+        "beat": "explore",
+        "text": "This area slows me down today. I want a clearer, faster experience around Streamline the Core Workflow.",
+        "directionId": "core-flow-efficiency"
+      },
+      {
+        "id": "b26fdd3b-08ed-47f2-98a3-0dfa2687efa0",
+        "speaker": "Interviewer",
+        "beat": "summary",
+        "text": "Can I summarize that we should improve Streamline the Core Workflow with a clearer UI flow?",
+        "directionId": "core-flow-efficiency"
+      },
+      {
+        "id": "e5c71b42-9342-4604-bf9f-3c7961d17365",
+        "speaker": "Interviewee",
+        "beat": "confirmation",
+        "text": "Yes, that summary is right.",
+        "directionId": "core-flow-efficiency",
+        "expectedValidation": true
+      },
+      {
+        "id": "f3db5309-36ae-4e02-b1e5-80376a064bd5",
+        "speaker": "Interviewer",
+        "beat": "summary",
+        "text": "Thanks. I have enough to draft UI-only changes and show before/after now."
+      }
+    ]
+  }
+}

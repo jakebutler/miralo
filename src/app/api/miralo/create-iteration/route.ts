@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
-import { createIteration } from "@/lib/miralo/orchestrator";
+import { startIterationBuild } from "@/lib/miralo/iterationBuildManager";
+import { readIterationPromptText } from "@/lib/miralo/iterationPrompt";
 import { CreateIterationInput } from "@/lib/miralo/types";
 
 export async function POST(request: Request) {
@@ -10,8 +11,9 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "sessionId is required." }, { status: 400 });
     }
 
-    const session = await createIteration(input.sessionId);
-    return NextResponse.json({ session });
+    const { session, job } = await startIterationBuild(input.sessionId);
+    const iterationPromptText = await readIterationPromptText(session);
+    return NextResponse.json({ session, job, iterationPromptText });
   } catch (error) {
     return NextResponse.json(
       {

@@ -5,11 +5,12 @@
   "packageManager": "bun@1.2.2",
   "scripts": {
     "dev": "next dev",
+    "dev:reset": "node scripts/dev-reset.mjs",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "miralo:record": "node miralo/scripts/record-clickthrough.mjs",
-    "miralo:validate": "bash miralo/scripts/validate-clickthrough.sh"
+    "miralo:record": "node demo-orchestration/scripts/record-clickthrough.mjs",
+    "miralo:validate": "bash demo-orchestration/scripts/validate-clickthrough.sh"
   },
   "dependencies": {
     "@reduxjs/toolkit": "^1.9.5",
@@ -27,6 +28,8 @@
     "typescript": "5.1.6"
   },
   "devDependencies": {
+    "eslint": "8.57.0",
+    "eslint-config-next": "13.4.12",
     "playwright": "^1.51.0"
   }
 }

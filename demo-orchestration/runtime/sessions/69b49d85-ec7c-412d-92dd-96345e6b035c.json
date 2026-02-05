@@ -1,0 +1,168 @@
+{
+  "id": "69b49d85-ec7c-412d-92dd-96345e6b035c",
+  "createdAt": "2026-02-05T21:51:06.729Z",
+  "updatedAt": "2026-02-05T21:51:15.969Z",
+  "intake": {
+    "repoPath": "/Users/jacobbutler/Documents/GitHub/miralo/demo-todo-app",
+    "guidanceMode": "needs-help",
+    "hasHypotheses": false,
+    "hasScript": false
+  },
+  "transcript": [],
+  "validatedFeedback": [],
+  "worktrees": [
+    {
+      "name": "clarify-onboarding",
+      "status": "selected",
+      "rationale": "Chosen first because the interview confirmed clarify onboarding experience with explicit agreement.",
+      "directionId": "clarify-onboarding"
+    },
+    {
+      "name": "optimize-primary-tasks",
+      "status": "queued",
+      "rationale": "Prepared as follow-on direction after primary changes are validated.",
+      "directionId": "optimize-primary-tasks"
+    },
+    {
+      "name": "visual-polish-speculative",
+      "status": "speculative",
+      "rationale": "Optional polish lane after clarify onboarding experience lands."
+    }
+  ],
+  "decisionLog": [],
+  "analysis": {
+    "id": "e06aadc0-bef1-4542-abda-01d5aba363c4",
+    "repoPath": "/Users/jacobbutler/Documents/GitHub/miralo/demo-todo-app",
+    "generatedAt": "2026-02-05T21:51:00.699Z",
+    "filesScanned": 20,
+    "elapsedMs": 1,
+    "summary": "This repository is a focused product-facing todo application built with Next.js, React, and Tailwind CSS, leveraging Redux Toolkit for state management and localStorage for client-side persistence. It supports rapid UI iteration and is structured for quick interview-driven feedback cycles rather than complex multi-module functionality.",
+    "capabilities": [
+      "Next.js framework usage",
+      "React component architecture",
+      "Tailwind CSS for styling",
+      "Redux Toolkit for state management",
+      "Client-side localStorage persistence",
+      "TypeScript and JavaScript codebase"
+    ],
+    "directions": [
+      {
+        "id": "clarify-onboarding",
+        "title": "Clarify Onboarding Experience",
+        "reason": "Users may struggle initially without clear guidance or orientation, especially in a multi-route or configurable app environment.",
+        "interviewFocus": "Explore users' expectations on first use and identify missing information that would help them start using the product more confidently.",
+        "confidence": 0.78
+      },
+      {
+        "id": "optimize-primary-tasks",
+        "title": "Optimize Primary Task Flow",
+        "reason": "Core user tasks should be streamlined to reduce friction and improve efficiency, as repeated small delays impact overall satisfaction.",
+        "interviewFocus": "Investigate points where users hesitate or perform extra steps during their most frequent actions to identify bottlenecks.",
+        "confidence": 0.82
+      },
+      {
+        "id": "enhance-feedback",
+        "title": "Enhance Feedback and Confirmation",
+        "reason": "Users need clear, immediate feedback on data changes to build trust and reduce uncertainty about whether actions succeeded.",
+        "interviewFocus": "Ask which interactions feel ambiguous or unreliable and what types of feedback would increase user confidence in the system.",
+        "confidence": 0.69
+      },
+      {
+        "id": "refine-domain-workflow",
+        "title": "Refine Domain-Specific Workflow",
+        "reason": "The todo domain suggests specific task sequences that could be tightened to improve flow and reduce cognitive load.",
+        "interviewFocus": "Understand how users complete key domain tasks and identify any missing steps or awkward handoffs that disrupt flow.",
+        "confidence": 0.66
+      }
+    ]
+  },
+  "script": {
+    "id": "ee811f65-9f19-4c31-aa68-0fc84e5df41c",
+    "analysisId": "e06aadc0-bef1-4542-abda-01d5aba363c4",
+    "generatedAt": "2026-02-05T21:51:06.730Z",
+    "title": "Miralo Interview Script",
+    "selectedDirectionIds": [
+      "clarify-onboarding",
+      "optimize-primary-tasks"
+    ],
+    "lines": [
+      {
+        "id": "c4a0eece-cf63-4dbc-bc38-6841dccb3da8",
+        "speaker": "Interviewer",
+        "beat": "explore",
+        "text": "Thanks for walking through this product. I want to understand where the current experience feels slow, unclear, or frustrating."
+      },
+      {
+        "id": "a6d8ee11-4ce0-42f4-b486-e27e735da169",
+        "speaker": "Interviewer",
+        "beat": "explore",
+        "text": "Let's focus on Clarify Onboarding Experience. Explore users' expectations on first use and identify missing information that would help them start using the product more confidently.",
+        "directionId": "clarify-onboarding"
+      },
+      {
+        "id": "0b4f00a6-f37b-44a3-887f-f2f4462e2aba",
+        "speaker": "Interviewee",
+        "beat": "explore",
+        "text": "This area slows me down today. I want a clearer, faster experience around Clarify Onboarding Experience.",
+        "directionId": "clarify-onboarding"
+      },
+      {
+        "id": "303d5bf6-fec0-411e-94f7-69ff78f7c6b4",
+        "speaker": "Interviewer",
+        "beat": "summary",
+        "text": "Can I summarize that we should improve Clarify Onboarding Experience with a clearer UI flow?",
+        "directionId": "clarify-onboarding"
+      },
+      {
+        "id": "5cc8b470-f194-4c6e-bd8f-ac7153fb7e71",
+        "speaker": "Interviewee",
+        "beat": "confirmation",
+        "text": "Yes, that summary is right.",
+        "directionId": "clarify-onboarding",
+        "expectedValidation": true
+      },
+      {
+        "id": "79841b93-8855-4f87-8853-10d54864d35c",
+        "speaker": "Interviewer",
+        "beat": "explore",
+        "text": "Great. Let's capture one more priority before we move into implementation.",
+        "directionId": "clarify-onboarding"
+      },
+      {
+        "id": "4f8bff23-c3f8-4aef-bf28-ca3b7a4105c4",
+        "speaker": "Interviewer",
+        "beat": "explore",
+        "text": "Let's focus on Optimize Primary Task Flow. Investigate points where users hesitate or perform extra steps during their most frequent actions to identify bottlenecks.",
+        "directionId": "optimize-primary-tasks"
+      },
+      {
+        "id": "4fa8eb45-111d-4d28-833d-48c62dc8ab0c",
+        "speaker": "Interviewee",
+        "beat": "explore",
+        "text": "This area slows me down today. I want a clearer, faster experience around Optimize Primary Task Flow.",
+        "directionId": "optimize-primary-tasks"
+      },
+      {
+        "id": "f8d685b1-4d78-4943-a0e3-8f3e1dcabc56",
+        "speaker": "Interviewer",
+        "beat": "summary",
+        "text": "Can I summarize that we should improve Optimize Primary Task Flow with a clearer UI flow?",
+        "directionId": "optimize-primary-tasks"
+      },
+      {
+        "id": "0bd07bc8-a2cb-44ca-b6dd-427a426a3d6d",
+        "speaker": "Interviewee",
+        "beat": "confirmation",
+        "text": "Yes, that summary is right.",
+        "directionId": "optimize-primary-tasks",
+        "expectedValidation": true
+      },
+      {
+        "id": "fada76d6-a5a8-4e42-b897-6a2a157c6dca",
+        "speaker": "Interviewer",
+        "beat": "summary",
+        "text": "Thanks. I have enough to draft UI-only changes and show before/after now."
+      }
+    ]
+  }
+}

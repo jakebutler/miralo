@@ -1,0 +1,11 @@
+# Iteration Prompt
+
+Validated summary:
+No validated summary detected yet.
+
+Session ID: 4671376b-6a31-492e-97ec-8414b13e4c5b
+Summary chunk: (none)
+Affirmation chunk: (none)
+Supporting chunk ids: (none)
+
+Constraint: UI-only changes. No backend/schema/auth hardening.

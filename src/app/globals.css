@@ -71,3 +71,142 @@ body {
 .miralo-pulse {
   animation: miralo-pulse 1.6s ease-out infinite;
 }
+
+.miralo-landing {
+  position: relative;
+  min-height: 100vh;
+  overflow: hidden;
+  background: radial-gradient(circle at 10% 10%, #fdf5e7 0%, #f6f3ec 48%, #ebe2cf 100%);
+  color: var(--miralo-ink);
+}
+
+.miralo-landing-bg {
+  position: absolute;
+  inset: 0;
+  opacity: 0.34;
+  background-image: linear-gradient(
+      to right,
+      rgba(13, 17, 23, 0.08) 1px,
+      transparent 1px
+    ),
+    linear-gradient(to bottom, rgba(13, 17, 23, 0.08) 1px, transparent 1px);
+  background-size: 44px 44px;
+}
+
+.miralo-landing-aurora {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(70px);
+  pointer-events: none;
+}
+
+.miralo-landing-aurora-a {
+  right: -4rem;
+  top: -5rem;
+  width: 24rem;
+  height: 24rem;
+  background: rgba(246, 178, 107, 0.45);
+}
+
+.miralo-landing-aurora-b {
+  bottom: -6rem;
+  left: -6rem;
+  width: 28rem;
+  height: 28rem;
+  background: rgba(31, 111, 120, 0.38);
+}
+
+.miralo-landing-fade {
+  animation: miralo-fade-up 0.65s ease-out both;
+}
+
+.miralo-landing-cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  border-radius: 9999px;
+  padding: 0.72rem 1.2rem;
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: #fff;
+  background: linear-gradient(120deg, #1f6f78, #174f56);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  box-shadow: 0 12px 26px rgba(31, 111, 120, 0.26);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
+}
+
+.miralo-landing-cta:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 16px 30px rgba(31, 111, 120, 0.34);
+  filter: brightness(1.03);
+}
+
+.miralo-landing-cta-subtle,
+.miralo-landing-cta-subtle-dark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  border-radius: 9999px;
+  padding: 0.72rem 1.2rem;
+  font-size: 0.88rem;
+  font-weight: 700;
+  transition: transform 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+.miralo-landing-cta-subtle {
+  border: 1px solid rgba(13, 17, 23, 0.2);
+  color: #1f2937;
+  background: rgba(255, 255, 255, 0.66);
+}
+
+.miralo-landing-cta-subtle:hover {
+  transform: translateY(-1px);
+  border-color: rgba(31, 111, 120, 0.45);
+  color: #12464d;
+}
+
+.miralo-landing-cta-subtle-dark {
+  border: 1px solid rgba(255, 255, 255, 0.34);
+  color: #f8fafc;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.miralo-landing-cta-subtle-dark:hover {
+  transform: translateY(-1px);
+  border-color: rgba(255, 255, 255, 0.62);
+}
+
+.miralo-landing-panel {
+  border-radius: 1.5rem;
+  border: 1px solid rgba(13, 17, 23, 0.12);
+  background: rgba(255, 255, 255, 0.64);
+  box-shadow: 0 24px 70px rgba(13, 17, 23, 0.12);
+  padding: 1.4rem;
+  backdrop-filter: blur(10px);
+}
+
+.miralo-landing-proof {
+  border-radius: 1.25rem;
+  border: 1px solid rgba(13, 17, 23, 0.12);
+  background: rgba(255, 255, 255, 0.72);
+  box-shadow: 0 14px 30px rgba(13, 17, 23, 0.1);
+  padding: 1rem;
+  transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.miralo-landing-proof:hover {
+  transform: translateY(-2px);
+  border-color: rgba(31, 111, 120, 0.35);
+}
+
+@media (min-width: 768px) {
+  .miralo-landing-panel {
+    padding: 1.8rem;
+  }
+
+  .miralo-landing-proof {
+    padding: 1.3rem;
+  }
+}

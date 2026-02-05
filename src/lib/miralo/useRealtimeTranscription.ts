@@ -18,6 +18,8 @@ interface UseRealtimeTranscriptionParams {
   onError: (message: string) => void;
 }
 
+type SpeakerMode = "auto" | "manual";
+
 interface RealtimeSessionResponse {
   mode?: "realtime" | "fallback";
   reason?: string;
@@ -62,14 +64,19 @@ declare global {
 
 export function useRealtimeTranscription(params: UseRealtimeTranscriptionParams) {
   const [status, setStatus] = useState<TranscriptionStatus>("idle");
+  const [speakerMode, setSpeakerMode] = useState<SpeakerMode>("auto");
+  const [manualSpeaker, setManualSpeaker] = useState<TranscriptSpeaker>("Interviewee");
   const [activeSpeaker, setActiveSpeaker] = useState<TranscriptSpeaker>("Interviewee");
   const [partials, setPartials] = useState<LivePartial[]>([]);
-  const [realtimeMode, setRealtimeMode] = useState<"realtime" | "fallback">("fallback");
-  const [modeReason, setModeReason] = useState<string>("Not started.");
+  const [realtimeMode, setRealtimeMode] = useState<"realtime" | "fallback">("realtime");
+  const [modeReason, setModeReason] = useState<string>(
+    "Live mode is default. Start live transcript when ready."
+  );
   const [budgetInfo, setBudgetInfo] = useState<RealtimeSessionResponse["budget"]>();
 
   const recognitionRef = useRef<SpeechRecognitionLike | null>(null);
   const partialIdRef = useRef<string | null>(null);
+  const lastDetectedSpeakerRef = useRef<TranscriptSpeaker>("Interviewer");
 
   const isSupported = useMemo(() => {
     if (typeof window === "undefined") {
@@ -78,7 +85,42 @@ export function useRealtimeTranscription(params: UseRealtimeTranscriptionParams)
     return Boolean(window.SpeechRecognition || window.webkitSpeechRecognition);
   }, []);
 
-  const pushPartial = (text: string) => {
+  const detectSpeaker = (text: string): TranscriptSpeaker => {
+    if (speakerMode === "manual") {
+      return manualSpeaker;
+    }
+
+    const normalized = text.trim().toLowerCase();
+    const previous = lastDetectedSpeakerRef.current;
+
+    const summaryPattern =
+      /(can i summarize|let me summarize|so what i'm hearing|does that sound right|can i confirm)/;
+    const interviewerPattern =
+      /(^thanks for joining|^today we|^walk me through|^tell me about|what would|what did|how did|can you|could you|would you)/;
+    const intervieweePattern =
+      /(^i want|^i need|^i wish|^i don't|^this feels|^it's|^also|^honestly|^for me|^my flow)/;
+    const affirmationPattern = /^(yes|yeah|yep|exactly|that's right|correct|totally)\b/;
+
+    if (summaryPattern.test(normalized) || interviewerPattern.test(normalized)) {
+      return "Interviewer";
+    }
+
+    if (affirmationPattern.test(normalized) || intervieweePattern.test(normalized)) {
+      return "Interviewee";
+    }
+
+    if (normalized.endsWith("?")) {
+      return "Interviewer";
+    }
+
+    if (normalized.length < 12) {
+      return previous === "Interviewer" ? "Interviewee" : "Interviewer";
+    }
+
+    return previous;
+  };
+
+  const pushPartial = (text: string, speaker: TranscriptSpeaker) => {
     const id = partialIdRef.current || `partial-${Date.now()}`;
     partialIdRef.current = id;
 
@@ -87,7 +129,7 @@ export function useRealtimeTranscription(params: UseRealtimeTranscriptionParams)
       next.push({
         id,
         text,
-        speaker: activeSpeaker,
+        speaker,
         updatedAt: Date.now(),
       });
       return next.slice(-4);
@@ -104,7 +146,7 @@ export function useRealtimeTranscription(params: UseRealtimeTranscriptionParams)
     partialIdRef.current = null;
   };
 
-  const finalizeChunk = async (textFinal: string) => {
+  const finalizeChunk = async (textFinal: string, speaker: TranscriptSpeaker) => {
     const now = Date.now();
     const chunkId = `rt-${now}-${Math.round(Math.random() * 10000)}`;
 
@@ -114,7 +156,7 @@ export function useRealtimeTranscription(params: UseRealtimeTranscriptionParams)
       body: JSON.stringify({
         sessionId: params.sessionId,
         chunkId,
-        speaker: activeSpeaker,
+        speaker,
         startMs: now - 1200,
         endMs: now,
         textFinal,
@@ -172,17 +214,20 @@ export function useRealtimeTranscription(params: UseRealtimeTranscriptionParams)
         if (!transcript) {
           continue;
         }
+        const detectedSpeaker = detectSpeaker(transcript);
+        setActiveSpeaker(detectedSpeaker);
 
         if (result.isFinal) {
           clearPartial();
+          lastDetectedSpeakerRef.current = detectedSpeaker;
           try {
-            await finalizeChunk(transcript);
+            await finalizeChunk(transcript, detectedSpeaker);
           } catch (error) {
             params.onError(error instanceof Error ? error.message : "Finalize failed.");
             setStatus("error");
           }
         } else {
-          pushPartial(transcript);
+          pushPartial(transcript, detectedSpeaker);
         }
       }
     };
@@ -214,8 +259,11 @@ export function useRealtimeTranscription(params: UseRealtimeTranscriptionParams)
     realtimeMode,
     modeReason,
     budgetInfo,
+    speakerMode,
+    setSpeakerMode,
+    manualSpeaker,
+    setManualSpeaker,
     activeSpeaker,
-    setActiveSpeaker,
     partials,
     start,
     stop,

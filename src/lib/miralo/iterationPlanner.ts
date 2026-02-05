@@ -77,8 +77,8 @@ export async function createIterationPlan(
   const createdAt = new Date().toISOString();
   const id = randomUUID();
 
-  const logsDir = path.resolve(process.cwd(), "miralo/runtime/logs");
-  const worktreesDir = path.resolve(process.cwd(), "miralo/runtime/worktrees", session.id);
+  const logsDir = path.resolve(process.cwd(), "demo-orchestration/runtime/logs");
+  const worktreesDir = path.resolve(process.cwd(), "demo-orchestration/runtime/worktrees", session.id);
   await mkdir(logsDir, { recursive: true });
   await mkdir(worktreesDir, { recursive: true });
 

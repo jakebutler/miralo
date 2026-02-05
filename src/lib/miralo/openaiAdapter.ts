@@ -4,7 +4,7 @@ import path from "node:path";
 const DEFAULT_MODEL = process.env.MIRALO_OPENAI_MODEL || "gpt-4.1-mini";
 const HARD_BUDGET = Number.parseFloat(process.env.MIRALO_OPENAI_BUDGET_USD || "50");
 const SOFT_BUDGET = Number.parseFloat(process.env.MIRALO_OPENAI_SOFT_CAP_USD || "20");
-const USAGE_LOG_PATH = path.resolve(process.cwd(), "miralo/runtime/logs/openai-usage.log");
+const USAGE_LOG_PATH = path.resolve(process.cwd(), "demo-orchestration/runtime/logs/openai-usage.log");
 
 interface OpenAiChoice {
   message?: {
@@ -19,6 +19,31 @@ interface OpenAiResponse {
     completion_tokens?: number;
     total_tokens?: number;
   };
+}
+
+function parseJsonFromModelOutput(raw: string): unknown | null {
+  const trimmed = raw.trim();
+  const withoutFence = trimmed
+    .replace(/^```json\s*/i, "")
+    .replace(/^```\s*/i, "")
+    .replace(/\s*```$/, "")
+    .trim();
+
+  try {
+    return JSON.parse(withoutFence);
+  } catch {
+    const start = withoutFence.indexOf("{");
+    const end = withoutFence.lastIndexOf("}");
+    if (start === -1 || end <= start) {
+      return null;
+    }
+
+    try {
+      return JSON.parse(withoutFence.slice(start, end + 1));
+    } catch {
+      return null;
+    }
+  }
 }
 
 function featureEnabled(): boolean {
@@ -38,7 +63,7 @@ async function logUsage(event: {
   totalTokens: number;
   estimatedUsd: number;
 }) {
-  const logsDir = path.resolve(process.cwd(), "miralo/runtime/logs");
+  const logsDir = path.resolve(process.cwd(), "demo-orchestration/runtime/logs");
   await mkdir(logsDir, { recursive: true });
 
   const line = `${new Date().toISOString()} ${JSON.stringify(event)}\n`;
@@ -91,6 +116,7 @@ export async function maybeGenerateJson<T>(params: {
   task: string;
   input: unknown;
   maxTokens: number;
+  systemPrompt?: string;
 }): Promise<T | null> {
   if (!featureEnabled()) {
     return null;
@@ -109,14 +135,15 @@ export async function maybeGenerateJson<T>(params: {
     },
     body: JSON.stringify({
       model: DEFAULT_MODEL,
-      temperature: 0.2,
+      temperature: 0,
       max_tokens: params.maxTokens,
       response_format: { type: "json_object" },
       messages: [
         {
           role: "system",
           content:
-            "You are a product-research assistant. Output strictly valid JSON with no markdown.",
+            params.systemPrompt ||
+            "You are a product-research and UX strategy assistant. Output strictly valid JSON with no markdown.",
         },
         {
           role: "user",
@@ -154,11 +181,12 @@ export async function maybeGenerateJson<T>(params: {
     estimatedUsd,
   });
 
-  try {
-    return JSON.parse(raw) as T;
-  } catch {
+  const parsed = parseJsonFromModelOutput(raw);
+  if (!parsed) {
     return null;
   }
+
+  return parsed as T;
 }
 
 export async function createRealtimeTranscriptionSession(): Promise<RealtimeSessionResult> {

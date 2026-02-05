@@ -4,6 +4,14 @@ Miralo is a hackathon demo that pairs a scripted user interview with real-time
 UI-only changes. The demo app is a small Next.js Todo list (Redux Toolkit +
 localStorage) that Miralo iterates on during the interview.
 
+## Interview Target Repo
+
+The standalone Todo app used for intake/testing now lives at:
+
+- `demo-todo-app/`
+
+Use this path in Miralo intake when selecting the repo to analyze.
+
 ## Quick Start
 
 1. Install dependencies
@@ -19,6 +27,16 @@ bun run dev
 ```
 
 Then visit `http://localhost:3000/demo`.
+
+## Dev Server Reset (Recommended)
+
+If you see transient 404/500 errors for `/_next/static/...` in dev mode, run:
+
+```bash
+bun run dev:reset -- -p 3001
+```
+
+This clears stale `.next` artifacts and starts a clean dev server.
 
 3. Install Playwright browser (first run only)
 
@@ -62,7 +80,7 @@ Run a deterministic validation flow that records a browser video and screenshot.
 bun run miralo:validate
 ```
 
-Artifacts are written to `miralo/runtime/recordings/` and the script prints
+Artifacts are written to `demo-orchestration/runtime/recordings/` and the script prints
 `READY_TO_SHOW` when complete.
 
 ## Optional Realtime Transcription (OpenAI)
@@ -88,16 +106,17 @@ If OpenAI is disabled or budget-limited, the API returns `mode: "fallback"` with
 Create lane worktrees for parallel implementation:
 
 ```bash
-bash miralo/scripts/worktree-init.sh
+bash demo-orchestration/scripts/worktree-init.sh
 ```
 
 Detailed ticket sequencing and dependencies:
 
-- `miralo/docs/execution-plan.md`
+- `demo-orchestration/docs/execution-plan.md`
 
 ## Project Structure
 
 - `src/app/miralo` — Miralo demo console UI
 - `src/app/demo` — Demo Todo route without auth
-- `src/app/todos` — Original auth-gated Todo flow
-- `miralo/` — Demo scaffolding, logs, and scripts
+- `src/app/todos` — Main Todo flow used in the interview demo
+- `demo-todo-app` — Standalone Todo repository used as the interview target
+- `demo-orchestration/` — Demo scaffolding, logs, and scripts

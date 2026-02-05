@@ -1,0 +1,17 @@
+{
+  "project": "miralo",
+  "repo": "demo-todo-app",
+  "ports": {
+    "before": 3000,
+    "after": 3001
+  },
+  "anticipated_directions": [
+    "empty_state_guidance",
+    "bulk_actions_panel",
+    "visual_refresh"
+  ],
+  "recording": {
+    "required": true,
+    "tool": "playwright"
+  }
+}

@@ -5,6 +5,69 @@ import { DirectionOption, RepoAnalysis } from "./types";
 
 const MAX_FILES = 250;
 const MAX_FILE_BYTES = 256_000;
+const README_LIMIT = 1400;
+
+const IGNORED_DIRS = new Set([
+  "node_modules",
+  ".git",
+  ".next",
+  "dist",
+  "build",
+  "out",
+  "coverage",
+  ".turbo",
+  ".vercel",
+]);
+
+const DOMAIN_KEYWORDS = [
+  "checkout",
+  "billing",
+  "payments",
+  "invoice",
+  "subscription",
+  "catalog",
+  "inventory",
+  "order",
+  "crm",
+  "pipeline",
+  "dashboard",
+  "analytics",
+  "report",
+  "chat",
+  "message",
+  "notification",
+  "calendar",
+  "schedule",
+  "booking",
+  "appointment",
+  "notes",
+  "tasks",
+  "todo",
+  "kanban",
+  "onboarding",
+  "profile",
+  "settings",
+  "admin",
+];
+
+type RepoContext = {
+  repoPath: string;
+  fileCount: number;
+  topExtensions: { ext: string; count: number }[];
+  topDirectories: { name: string; count: number }[];
+  packageSummary?: {
+    name?: string;
+    scripts?: string[];
+    dependencies?: string[];
+    devDependencies?: string[];
+  };
+  frameworks: string[];
+  hasAppRouter: boolean;
+  hasPagesRouter: boolean;
+  routeCount: number;
+  readmeExcerpt?: string;
+  keywordSignals: string[];
+};
 
 export function resolveRepoPath(inputPath: string): string {
   const fallback = process.cwd();
@@ -28,21 +91,17 @@ async function walkFiles(root: string): Promise<string[]> {
       break;
     }
 
-    const entries = await readdir(current, { withFileTypes: true });
-    for (const entry of entries) {
-      const fullPath = path.join(current, entry.name);
-      if (entry.isDirectory()) {
-        if (
-          entry.name === "node_modules" ||
-          entry.name === ".git" ||
-          entry.name === ".next"
-        ) {
-          continue;
+      const entries = await readdir(current, { withFileTypes: true });
+      for (const entry of entries) {
+        const fullPath = path.join(current, entry.name);
+        if (entry.isDirectory()) {
+          if (IGNORED_DIRS.has(entry.name)) {
+            continue;
+          }
+          queue.push(fullPath);
+        } else if (entry.isFile()) {
+          files.push(fullPath);
         }
-        queue.push(fullPath);
-      } else if (entry.isFile()) {
-        files.push(fullPath);
-      }
 
       if (files.length >= MAX_FILES) {
         break;
@@ -61,95 +120,293 @@ async function readTextIfSmall(filePath: string): Promise<string> {
   return readFile(filePath, "utf8");
 }
 
-function buildDirections(capabilities: string[]): DirectionOption[] {
-  const hasAuth = capabilities.some((capability) => capability.includes("authentication"));
-  const hasRedux = capabilities.some((capability) => capability.includes("Redux"));
+function toSortedCounts<T extends string>(
+  items: Record<T, number>
+): { key: string; count: number }[] {
+  return (Object.entries(items) as Array<[string, number]>)
+    .map(([key, count]) => ({ key, count }))
+    .sort((a, b) => b.count - a.count);
+}
 
-  const directions: DirectionOption[] = [
-    {
-      id: "onboarding-empty-state",
-      title: "Improve Empty-State Onboarding",
-      reason:
-        "The todo flow has a basic empty state and can benefit from stronger first-task guidance.",
-      interviewFocus:
-        "Ask how users decide their first task and what guidance they expect when the list is empty.",
-      confidence: 0.87,
-    },
-    {
-      id: "task-priority-clarity",
-      title: "Clarify Priority and Next Action",
-      reason:
-        "Current list interactions are simple; users may need faster scanning and clearer next actions.",
-      interviewFocus:
-        "Probe which tasks users struggle to prioritize and what visual cues would reduce hesitation.",
-      confidence: 0.82,
-    },
-    {
-      id: "bulk-actions-and-closure",
-      title: "Add Bulk Action Comfort",
-      reason:
-        "Deleting and toggling are item-by-item; repetitive cleanup can create friction.",
-      interviewFocus:
-        "Explore how users wrap up sessions and what batch operations they reach for most.",
-      confidence: 0.79,
-    },
-  ];
+function pickTopExtensions(files: string[]): { ext: string; count: number }[] {
+  const counts: Record<string, number> = {};
+  for (const filePath of files) {
+    const ext = path.extname(filePath).toLowerCase() || "no-ext";
+    counts[ext] = (counts[ext] || 0) + 1;
+  }
+  return toSortedCounts(counts)
+    .slice(0, 8)
+    .map((item) => ({ ext: item.key, count: item.count }));
+}
 
-  if (hasAuth) {
+function pickTopDirectories(repoPath: string, files: string[]): { name: string; count: number }[] {
+  const counts: Record<string, number> = {};
+  for (const filePath of files) {
+    const relative = path.relative(repoPath, filePath);
+    const [top] = relative.split(path.sep);
+    if (!top) {
+      continue;
+    }
+    counts[top] = (counts[top] || 0) + 1;
+  }
+  return toSortedCounts(counts)
+    .slice(0, 8)
+    .map((item) => ({ name: item.key, count: item.count }));
+}
+
+function mapFrameworks(deps: string[]): string[] {
+  const signals: Record<string, string> = {
+    next: "Next.js",
+    react: "React",
+    vue: "Vue",
+    svelte: "Svelte",
+    nuxt: "Nuxt",
+    remix: "Remix",
+    astro: "Astro",
+    express: "Express",
+    fastify: "Fastify",
+    "next-auth": "NextAuth",
+    nextauth: "NextAuth",
+    prisma: "Prisma",
+    drizzle: "Drizzle",
+    mongoose: "Mongoose",
+    firebase: "Firebase",
+    supabase: "Supabase",
+    stripe: "Stripe",
+    tailwindcss: "Tailwind CSS",
+    redux: "Redux",
+    zustand: "Zustand",
+    mobx: "MobX",
+    "@tanstack/react-query": "React Query",
+    "react-query": "React Query",
+    trpc: "tRPC",
+    graphql: "GraphQL",
+    apollo: "Apollo GraphQL",
+    playwright: "Playwright",
+    cypress: "Cypress",
+    vitest: "Vitest",
+    jest: "Jest",
+  };
+
+  const frameworks = new Set<string>();
+  for (const dep of deps) {
+    const normalized = dep.toLowerCase();
+    if (signals[normalized]) {
+      frameworks.add(signals[normalized]);
+    }
+  }
+  return Array.from(frameworks);
+}
+
+function extractKeywords(text: string): string[] {
+  const lowered = text.toLowerCase();
+  return DOMAIN_KEYWORDS.filter((keyword) => lowered.includes(keyword));
+}
+
+function buildDirections(context: RepoContext, capabilities: string[]): DirectionOption[] {
+  const directions: DirectionOption[] = [];
+
+  directions.push({
+    id: "first-run-clarity",
+    title: "Clarify First-Run Experience",
+    reason:
+      "New users likely need stronger orientation, especially if the product has multiple routes or configuration steps.",
+    interviewFocus:
+      "Ask what they expected to see first and which missing context would help them start faster.",
+    confidence: 0.78,
+  });
+
+  directions.push({
+    id: "core-flow-efficiency",
+    title: "Streamline the Core Workflow",
+    reason:
+      "Primary tasks should feel faster; small friction points compound over repeated use.",
+    interviewFocus:
+      "Probe where they hesitate or take extra clicks when completing their most common task.",
+    confidence: 0.82,
+  });
+
+  if (context.routeCount >= 4) {
     directions.push({
-      id: "auth-entry-friction",
-      title: "Reduce Sign-In Entry Friction",
+      id: "navigation-ia",
+      title: "Improve Navigation and Information Architecture",
       reason:
-        "There is an auth-gated todo route; the handoff from landing page to task entry may be unclear.",
+        "Multiple routes imply more navigation decisions; clarity here reduces bounce and confusion.",
       interviewFocus:
-        "Ask where users hesitate in sign-in and what reassurance they need before continuing.",
+        "Ask which screens they jump between and where they get lost or need breadcrumbs.",
       confidence: 0.74,
     });
   }
 
-  if (hasRedux) {
+  if (capabilities.some((capability) => capability.includes("authentication"))) {
     directions.push({
-      id: "state-feedback-visibility",
-      title: "Increase State Feedback Visibility",
+      id: "auth-onboarding-handoff",
+      title: "Smooth the Auth-to-Value Handoff",
       reason:
-        "Redux-driven state changes happen immediately but feedback affordances are minimal.",
+        "Sign-in gates can interrupt momentum; aligning the entry point with user intent reduces drop-off.",
       interviewFocus:
-        "Ask which confirmations or transitions would increase trust when tasks change state.",
-      confidence: 0.7,
+        "Ask what would convince them to sign in and what they need to see immediately after.",
+      confidence: 0.71,
+    });
+  }
+
+  if (
+    capabilities.some((capability) =>
+      /state management|database|data|list|dashboard|analytics/i.test(capability)
+    )
+  ) {
+    directions.push({
+      id: "feedback-and-trust",
+      title: "Increase Feedback and Trust Signals",
+      reason:
+        "When data updates quickly, users need clear confirmation to trust the outcome.",
+      interviewFocus:
+        "Ask which actions feel uncertain and what feedback would make changes feel reliable.",
+      confidence: 0.69,
+    });
+  }
+
+  if (context.keywordSignals.length > 0) {
+    directions.push({
+      id: "domain-specific-flow",
+      title: "Tighten Domain-Specific Flow",
+      reason:
+        "The repo hints at domain-specific workflows that could benefit from tighter sequencing.",
+      interviewFocus:
+        "Ask how they complete the key domain task and where handoffs or missing steps appear.",
+      confidence: 0.66,
     });
   }
 
   return directions.slice(0, 5);
 }
 
-export async function analyzeRepoDeterministic(repoPathInput: string): Promise<RepoAnalysis> {
-  const repoPath = resolveRepoPath(repoPathInput);
-  const files = await walkFiles(repoPath);
-
-  const appPages = files.filter((filePath) => /src\/app\/.+page\.(ts|tsx|js|jsx)$/.test(filePath));
-  const hasRedux = files.some((filePath) => filePath.includes("/src/redux/"));
-  const hasTailwindConfig = files.some((filePath) => filePath.endsWith("tailwind.config.js"));
-  const hasAuthRoute = files.some((filePath) => filePath.includes("/src/app/api/auth/"));
-
-  let usesLocalStorage = false;
-  let todoSignals = 0;
-
-  const signalCandidates = files.filter((filePath) =>
-    /(todo|localStorage|ToDo|todos)/i.test(filePath)
-  );
-
-  for (const filePath of signalCandidates.slice(0, 20)) {
-    const text = await readTextIfSmall(filePath);
-    if (text.includes("localStorage")) {
-      usesLocalStorage = true;
+async function loadPackageJson(repoPath: string): Promise<{
+  name?: string;
+  scripts?: string[];
+  dependencies?: string[];
+  devDependencies?: string[];
+}> {
+  try {
+    const packagePath = path.join(repoPath, "package.json");
+    const raw = await readTextIfSmall(packagePath);
+    if (!raw) {
+      return {};
     }
-    if (/todo/i.test(text)) {
-      todoSignals += 1;
+    const parsed = JSON.parse(raw) as {
+      name?: string;
+      scripts?: Record<string, string>;
+      dependencies?: Record<string, string>;
+      devDependencies?: Record<string, string>;
+    };
+    return {
+      name: parsed.name,
+      scripts: parsed.scripts ? Object.keys(parsed.scripts) : [],
+      dependencies: parsed.dependencies ? Object.keys(parsed.dependencies) : [],
+      devDependencies: parsed.devDependencies ? Object.keys(parsed.devDependencies) : [],
+    };
+  } catch {
+    return {};
+  }
+}
+
+async function loadReadmeExcerpt(repoPath: string): Promise<string | undefined> {
+  const candidates = ["README.md", "Readme.md", "readme.md"];
+  for (const name of candidates) {
+    try {
+      const raw = await readTextIfSmall(path.join(repoPath, name));
+      if (raw) {
+        return raw.slice(0, README_LIMIT).trim();
+      }
+    } catch {
+      continue;
     }
   }
+  return undefined;
+}
+
+async function buildRepoContextFromFiles(
+  repoPath: string,
+  files: string[]
+): Promise<RepoContext> {
+  const topExtensions = pickTopExtensions(files);
+  const topDirectories = pickTopDirectories(repoPath, files);
+  const packageSummary = await loadPackageJson(repoPath);
+  const readmeExcerpt = await loadReadmeExcerpt(repoPath);
+
+  const appPages = files.filter((filePath) => /src\/app\/.+page\.(ts|tsx|js|jsx)$/.test(filePath));
+  const pagesRouter = files.filter((filePath) =>
+    /pages\/.+\.(ts|tsx|js|jsx)$/.test(filePath)
+  );
+
+  const depList = [
+    ...(packageSummary.dependencies || []),
+    ...(packageSummary.devDependencies || []),
+  ];
+
+  const frameworks = mapFrameworks(depList);
+  const keywordSignals = Array.from(
+    new Set(
+      [
+        ...(readmeExcerpt ? extractKeywords(readmeExcerpt) : []),
+        ...files.flatMap((filePath) => extractKeywords(filePath)),
+      ].filter(Boolean)
+    )
+  );
+
+  return {
+    repoPath,
+    fileCount: files.length,
+    topExtensions,
+    topDirectories,
+    packageSummary,
+    frameworks,
+    hasAppRouter: appPages.length > 0,
+    hasPagesRouter: pagesRouter.length > 0,
+    routeCount: appPages.length + pagesRouter.length,
+    readmeExcerpt,
+    keywordSignals,
+  };
+}
+
+export async function buildRepoContext(repoPathInput: string): Promise<RepoContext> {
+  const repoPath = resolveRepoPath(repoPathInput);
+  const files = await walkFiles(repoPath);
+  return buildRepoContextFromFiles(repoPath, files);
+}
+
+export async function analyzeRepoDeterministic(repoPathInput: string): Promise<RepoAnalysis> {
+  const startedAt = Date.now();
+  const repoPath = resolveRepoPath(repoPathInput);
+  const files = await walkFiles(repoPath);
+  const context = await buildRepoContextFromFiles(repoPath, files);
+
+  const hasRedux = files.some((filePath) => filePath.includes("/src/redux/"));
+  const hasTailwindConfig = files.some((filePath) => filePath.endsWith("tailwind.config.js"));
+  const hasAuthRoute = files.some((filePath) =>
+    /\/(auth|login|signup|register)\//i.test(filePath)
+  );
+  const hasLocalStorage = files.some((filePath) => /localStorage/i.test(filePath));
 
   const capabilities: string[] = [];
-  capabilities.push(`Detected ${appPages.length} app route page(s) in Next.js app router.`);
+  if (context.frameworks.length > 0) {
+    capabilities.push(`Frameworks detected: ${context.frameworks.join(", ")}.`);
+  }
+  if (context.routeCount > 0) {
+    const routerLabel = context.hasAppRouter
+      ? "Next.js app router"
+      : context.hasPagesRouter
+        ? "pages router"
+        : "route definitions";
+    capabilities.push(`Detected ${context.routeCount} ${routerLabel} page(s).`);
+  }
+  if (context.topExtensions.length > 0) {
+    const extSummary = context.topExtensions
+      .slice(0, 4)
+      .map((item) => `${item.ext} (${item.count})`)
+      .join(", ");
+    capabilities.push(`Primary file types: ${extSummary}.`);
+  }
 
   if (hasRedux) {
     capabilities.push("State management appears to use Redux Toolkit.");
@@ -158,24 +415,35 @@ export async function analyzeRepoDeterministic(repoPathInput: string): Promise<R
     capabilities.push("Tailwind CSS is configured for rapid UI iteration.");
   }
   if (hasAuthRoute) {
-    capabilities.push("App includes authentication route handlers (NextAuth-style structure).");
+    capabilities.push("Authentication-related routes or flows appear in the codebase.");
   }
-  if (usesLocalStorage) {
-    capabilities.push("Todo data persistence appears to rely on browser localStorage.");
+  if (hasLocalStorage) {
+    capabilities.push("Client-side storage usage (localStorage) appears in the codebase.");
   }
-  if (todoSignals > 0) {
-    capabilities.push("Codebase contains direct todo workflow components and list interactions.");
+  if (context.keywordSignals.length > 0) {
+    capabilities.push(`Domain hints: ${context.keywordSignals.slice(0, 5).join(", ")}.`);
   }
 
-  const summary =
-    "This repository is a lightweight Next.js todo application with enough UI surface to run interview-driven iteration loops quickly. It already supports list creation and task state changes, making it a good target for validated UX refinements in onboarding, prioritization, and completion flow.";
+  const summary = [
+    "This repository looks like a product-facing app with enough UI surface to run interview-driven iteration loops quickly.",
+    context.frameworks.length > 0
+      ? `It appears to be built with ${context.frameworks.join(", ")}.`
+      : "It includes a mix of client and UI code suitable for iterative UX updates.",
+    context.routeCount > 0
+      ? `It includes roughly ${context.routeCount} route(s) to explore.`
+      : "The structure suggests a focused feature set rather than a large multi-module system.",
+  ]
+    .filter(Boolean)
+    .join(" ");
 
   return {
     id: randomUUID(),
     repoPath,
     generatedAt: new Date().toISOString(),
+    filesScanned: files.length,
+    elapsedMs: Date.now() - startedAt,
     summary,
     capabilities,
-    directions: buildDirections(capabilities),
+    directions: buildDirections(context, capabilities),
   };
 }
