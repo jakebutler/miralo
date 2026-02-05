@@ -3,6 +3,7 @@ import { readdir } from "node:fs/promises";
 import { createIterationPlan } from "./iterationPlanner";
 import { maybeGenerateJson } from "./openaiAdapter";
 import { analyzeRepoDeterministic, resolveRepoPath } from "./repoAnalyzer";
+import { detectValidatedDirection, finalizeChunkToSegment } from "./confirmationDetector";
 import {
   createSession,
   readSession,
@@ -16,6 +17,9 @@ import {
   GenerateScriptInput,
   IntakeState,
   MiraloSession,
+  TranscriptFinalizeInput,
+  ValidatedFeedback,
+  ValidatedDirectionCreatedEvent,
 } from "./types";
 
 function sanitizeIntake(input: AnalyzeRepoInput): IntakeState {
@@ -178,6 +182,82 @@ export async function createIteration(sessionId: string): Promise<MiraloSession>
   }
 
   return updated;
+}
+
+export async function finalizeTranscriptChunkAndPersist(
+  input: TranscriptFinalizeInput
+): Promise<{ session: MiraloSession; createdEvent: ValidatedDirectionCreatedEvent | null }> {
+  const session = await readSession(input.sessionId);
+  if (!session) {
+    throw new Error("Session not found.");
+  }
+
+  const newSegment = finalizeChunkToSegment({
+    chunkId: input.chunkId,
+    speaker: input.speaker,
+    startMs: input.startMs,
+    endMs: input.endMs,
+    textPartial: input.textPartial,
+    textFinal: input.textFinal,
+    source: input.source || "realtime",
+  });
+
+  const existingTranscript = session.transcript.filter((segment) => segment.id !== newSegment.id);
+  const transcript = [...existingTranscript, newSegment].sort((a, b) => a.t0 - b.t0);
+
+  const createdEvent = detectValidatedDirection({
+    transcript,
+    newChunk: newSegment,
+    existingValidated: session.validatedFeedback,
+  });
+
+  const validatedFeedback: ValidatedFeedback[] = [...session.validatedFeedback];
+
+  if (createdEvent) {
+    const alreadyExists = validatedFeedback.some(
+      (item) =>
+        item.summaryChunkId === createdEvent.summaryChunkId &&
+        item.affirmationChunkId === createdEvent.affirmationChunkId
+    );
+
+    if (!alreadyExists) {
+      validatedFeedback.push({
+        chunkId: createdEvent.summaryChunkId,
+        text: createdEvent.validatedText,
+        confidence: createdEvent.confidence,
+        summaryChunkId: createdEvent.summaryChunkId,
+        affirmationChunkId: createdEvent.affirmationChunkId,
+        supportingChunkIds: createdEvent.supportingChunkIds,
+      });
+    }
+  }
+
+  const highlightedChunkIds = new Set<string>();
+  for (const item of validatedFeedback) {
+    if (item.summaryChunkId) {
+      highlightedChunkIds.add(item.summaryChunkId);
+    }
+    if (item.affirmationChunkId) {
+      highlightedChunkIds.add(item.affirmationChunkId);
+    }
+  }
+
+  const normalizedTranscript = transcript.map((segment) => ({
+    ...segment,
+    validated: highlightedChunkIds.has(segment.id),
+  }));
+
+  const updated = await updateSession(session.id, (current) => ({
+    ...current,
+    transcript: normalizedTranscript,
+    validatedFeedback,
+  }));
+
+  if (!updated) {
+    throw new Error("Failed to persist transcript chunk.");
+  }
+
+  return { session: updated, createdEvent };
 }
 
 export async function latestValidatorArtifacts() {

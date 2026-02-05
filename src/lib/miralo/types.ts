@@ -28,6 +28,7 @@ export interface RepoAnalysis {
 
 export type ScriptSpeaker = "Interviewer" | "Interviewee";
 export type ScriptBeat = "explore" | "summary" | "confirmation";
+export type TranscriptSpeaker = ScriptSpeaker | "Unknown";
 
 export interface ScriptLine {
   id: string;
@@ -49,10 +50,15 @@ export interface InterviewScript {
 
 export interface TranscriptSegment {
   id: string;
-  speaker: ScriptSpeaker;
+  speaker: TranscriptSpeaker;
   t0: number;
   t1: number;
   text: string;
+  textPartial?: string;
+  textFinal?: string;
+  source?: "simulated" | "realtime" | "replay";
+  isSummaryCandidate?: boolean;
+  isAffirmation?: boolean;
   validated?: boolean;
 }
 
@@ -60,6 +66,9 @@ export interface ValidatedFeedback {
   chunkId: string;
   text: string;
   confidence: "high" | "medium" | "low";
+  summaryChunkId?: string;
+  affirmationChunkId?: string;
+  supportingChunkIds?: string[];
 }
 
 export type WorktreeStatus = "selected" | "queued" | "speculative";
@@ -115,4 +124,26 @@ export interface RunSessionInput {
 
 export interface CreateIterationInput {
   sessionId: string;
+}
+
+export interface TranscriptFinalizeInput {
+  sessionId: string;
+  chunkId: string;
+  speaker: TranscriptSpeaker;
+  startMs: number;
+  endMs: number;
+  textPartial?: string;
+  textFinal: string;
+  confidence?: "high" | "medium" | "low";
+  source?: "realtime" | "replay";
+}
+
+export interface ValidatedDirectionCreatedEvent {
+  id: string;
+  summaryChunkId: string;
+  affirmationChunkId: string;
+  validatedText: string;
+  supportingChunkIds: string[];
+  timestamp: string;
+  confidence: "high" | "medium" | "low";
 }
