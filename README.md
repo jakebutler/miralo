@@ -65,6 +65,24 @@ bun run miralo:validate
 Artifacts are written to `miralo/runtime/recordings/` and the script prints
 `READY_TO_SHOW` when complete.
 
+## Optional Realtime Transcription (OpenAI)
+
+Enable OpenAI-powered realtime transcription session creation:
+
+```bash
+export MIRALO_USE_OPENAI=1
+export OPENAI_API_KEY=your_key
+export MIRALO_TRANSCRIBE_MODEL=gpt-4o-mini-transcribe
+```
+
+Create a client session token:
+
+```bash
+curl -X POST http://localhost:3000/api/miralo/realtime/session
+```
+
+If OpenAI is disabled or budget-limited, the API returns `mode: "fallback"` with a reason.
+
 ## Parallel Worktrees
 
 Create lane worktrees for parallel implementation:
