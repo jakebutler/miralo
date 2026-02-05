@@ -31,6 +31,10 @@ yarn-error.log*
 
 # generated orchestration worktrees
 demo-orchestration/runtime/worktrees/*/iteration-*/
+demo-orchestration/runtime/logs/
+demo-orchestration/runtime/recordings/
+miralo/runtime/logs/
+miralo/runtime/recordings/
 
 # vercel
 .vercel
