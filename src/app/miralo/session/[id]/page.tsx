@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { MiraloSession } from "@/lib/miralo/types";
+import { useRealtimeTranscription } from "@/lib/miralo/useRealtimeTranscription";
 
 interface ValidatorArtifacts {
   readyToShow: boolean;
@@ -52,6 +53,12 @@ export default function MiraloSessionPage() {
     }
     void load();
   }, [sessionId]);
+
+  const realtime = useRealtimeTranscription({
+    sessionId,
+    onFinalized: load,
+    onError: (message) => setError(message),
+  });
 
   const runInterview = async () => {
     setRunning(true);
@@ -192,15 +199,65 @@ export default function MiraloSessionPage() {
             >
               {iterating ? "Building..." : "Create UI Iteration"}
             </button>
+            <button
+              type="button"
+              onClick={realtime.start}
+              disabled={realtime.status === "listening" || !realtime.isSupported}
+              className="rounded-full border border-slate-300 bg-white px-5 py-2 text-sm font-semibold text-slate-700 disabled:opacity-50"
+            >
+              {realtime.status === "connecting" ? "Connecting..." : "Start Live Transcript"}
+            </button>
+            <button
+              type="button"
+              onClick={realtime.stop}
+              disabled={realtime.status !== "listening"}
+              className="rounded-full border border-slate-300 bg-white px-5 py-2 text-sm font-semibold text-slate-700 disabled:opacity-50"
+            >
+              Stop Live Transcript
+            </button>
+            <select
+              value={realtime.activeSpeaker}
+              onChange={(event) =>
+                realtime.setActiveSpeaker(event.target.value as "Interviewer" | "Interviewee")
+              }
+              className="rounded-full border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-700"
+            >
+              <option value="Interviewer">Speaker: Interviewer</option>
+              <option value="Interviewee">Speaker: Interviewee</option>
+            </select>
             <span className="text-xs uppercase tracking-[0.18em] text-slate-500">
               Session: {session.id}
             </span>
           </div>
+          <div className="mt-3 text-xs uppercase tracking-[0.18em] text-slate-500">
+            Realtime mode: {realtime.realtimeMode} ({realtime.modeReason})
+          </div>
+          {realtime.budgetInfo ? (
+            <div className="mt-1 text-xs uppercase tracking-[0.18em] text-slate-500">
+              Budget: ${realtime.budgetInfo.spentUsd.toFixed(2)} spent / $
+              {realtime.budgetInfo.hardCapUsd.toFixed(2)} cap
+            </div>
+          ) : null}
         </section>
 
         <div className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
           <section className="miralo-card rounded-3xl p-6">
             <h2 className="text-lg font-semibold">Transcript</h2>
+            {realtime.partials.length > 0 ? (
+              <div className="mt-4 space-y-2">
+                {realtime.partials.map((partial) => (
+                  <div
+                    key={partial.id}
+                    className="rounded-2xl border border-dashed border-slate-300 bg-white/70 px-4 py-2 text-sm"
+                  >
+                    <p className="text-[10px] uppercase tracking-[0.18em] text-slate-500">
+                      Live partial · {partial.speaker}
+                    </p>
+                    <p className="mt-1 text-slate-700">{partial.text}</p>
+                  </div>
+                ))}
+              </div>
+            ) : null}
             <div className="mt-4 space-y-3">
               {session.transcript.length === 0 ? (
                 <p className="text-sm text-slate-600">
@@ -223,6 +280,23 @@ export default function MiraloSessionPage() {
                       </span>
                     </div>
                     <p className="mt-1 text-slate-800">{segment.text}</p>
+                    <div className="mt-2 flex flex-wrap gap-2">
+                      {segment.isSummaryCandidate ? (
+                        <span className="rounded-full bg-slate-100 px-2 py-1 text-[10px] uppercase tracking-[0.15em] text-slate-600">
+                          Summary Candidate
+                        </span>
+                      ) : null}
+                      {segment.isAffirmation ? (
+                        <span className="rounded-full bg-slate-100 px-2 py-1 text-[10px] uppercase tracking-[0.15em] text-slate-600">
+                          Affirmation
+                        </span>
+                      ) : null}
+                      {segment.source ? (
+                        <span className="rounded-full bg-slate-100 px-2 py-1 text-[10px] uppercase tracking-[0.15em] text-slate-600">
+                          {segment.source}
+                        </span>
+                      ) : null}
+                    </div>
                   </div>
                 ))
               )}

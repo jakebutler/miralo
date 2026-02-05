@@ -26,6 +26,14 @@ Todo demo at `/demo`.
 - `/demo` — Todo demo without auth, used for before/after ports.
 - `/todos` — Original auth-gated Todo flow.
 
+## Live Transcript Controls
+
+Session runtime now includes:
+
+- Start/stop live transcript controls
+- Active speaker selector (Interviewer / Interviewee)
+- Partial transcript stream cards before chunks finalize
+
 ## Validation Command
 
 From repo root:
